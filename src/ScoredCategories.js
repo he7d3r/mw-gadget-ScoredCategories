@@ -8,22 +8,32 @@
 	var pages,
 		model = 'reverted',
 		scoreName = model + 'Score',
+		oresUrl = '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
 		max = 10;
 	function showTable ( pages ) {
-		var i, page, $row, score,
+		var i, page, $row, score, revid,
 			$table = $( '<table><tbody><tr><th>Score</th><th>Page</th></tr></tbody></table>' )
 				.addClass( 'wikitable sortable' ),
 			$tbody = $table.find( 'tbody' );
 		for ( i = 0; i < pages.length; i++ ) {
       		page = pages[i];
+			revid = page.revisions[0].revid;
 			score = ( 100 * page[ scoreName ] ).toFixed(0);
 			$row = $( '<tr>' )
 				.append(
-					$( '<td>' ).text( score + '%' ),
+					$( '<td>' ).append(
+						$( '<a>' )
+							.attr(
+								'href',
+								oresUrl + '?models=' + model +
+									'&revids=' + revid
+							)
+							.text( score + '%' )
+          ),
 					$( '<td>' ).append(
 						$( '<a>' )
 							.attr( 'href', mw.util.getUrl( page.title, {
-								diff: page.revisions[0].revid
+								diff: revid
 							} ) )
 							.text( page.title )
 					)
@@ -57,7 +67,7 @@
 			return page.revisions[0].revid;
 		} );
 		$.ajax( {
-			url: '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
+			url: oresUrl,
 			data: {
 				models: 'reverted',
 				// TODO: Prevent this URL from having more than 2000 characters
