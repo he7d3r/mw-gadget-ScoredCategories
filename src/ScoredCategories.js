@@ -62,7 +62,10 @@
 
 	function getScores( data ) {
 		var revids;
-    pages = data.query.pages;
+		pages = data.query && data.query.pages;
+		if ( !pages ) {
+			return
+		}
 		revids = $.map( pages, function ( page ) {
 			return page.revisions[0].revid;
 		} );
