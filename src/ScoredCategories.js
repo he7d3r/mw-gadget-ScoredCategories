@@ -6,7 +6,7 @@
 ( function ( mw, $ ) {
 	'use strict';
 	var pages,
-		model = 'reverted',
+		model = 'damaging',
 		scoreName = model + 'Score',
 		oresUrl = '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
 		max = 10;
@@ -72,7 +72,7 @@
 		$.ajax( {
 			url: oresUrl,
 			data: {
-				models: 'reverted',
+				models: model,
 				// TODO: Prevent this URL from having more than 2000 characters
 				revids: revids.join( '|' )
 			},
