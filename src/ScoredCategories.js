@@ -1,5 +1,5 @@
 /**
- * Adds a table to category pages showing the pages with the top 10 revert scores
+ * Adds a table to category pages showing the pages with the top 10 scores
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
  */
