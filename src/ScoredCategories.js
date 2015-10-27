@@ -77,7 +77,7 @@
 				// TODO: Prevent this URL from having more than 2000 characters
 				revids: revids.join( '|' )
 			},
-			dataType: 'jsonp'
+			dataType: 'json'
 		} )
 		.done( getTopScores );
 	}
