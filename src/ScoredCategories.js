@@ -1,5 +1,6 @@
 /**
  * Adds a table to category pages showing the pages with the top 10 scores
+ *
  * @author: Helder (https://github.com/he7d3r)
  * @license: CC BY-SA 3.0 <https://creativecommons.org/licenses/by-sa/3.0/>
  */
@@ -10,15 +11,15 @@
 		scoreName = model + 'Score',
 		oresUrl = '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
 		max = 10;
-	function showTable ( pages ) {
+	function showTable( pages ) {
 		var i, page, $row, score, revid,
 			$table = $( '<table><tbody><tr><th>Score</th><th>Page</th></tr></tbody></table>' )
 				.addClass( 'wikitable sortable' ),
 			$tbody = $table.find( 'tbody' );
 		for ( i = 0; i < pages.length; i++ ) {
-      		page = pages[i];
-			revid = page.revisions[0].revid;
-			score = ( 100 * page[ scoreName ] ).toFixed(0);
+			page = pages[ i ];
+			revid = page.revisions[ 0 ].revid;
+			score = ( 100 * page[ scoreName ] ).toFixed( 0 );
 			$row = $( '<tr>' )
 				.append(
 					$( '<td>' ).append(
@@ -45,16 +46,16 @@
 		);
 	}
 	function getTopScores( data ) {
-		$.each( pages, function( i, page ) {
-			var score = data[ page.revisions[0].revid ][ model ];
+		$.each( pages, function ( i, page ) {
+			var score = data[ page.revisions[ 0 ].revid ][ model ];
 			if ( !score || score.error ) {
 				// return null;
 				page[ scoreName ] = 0;
 			} else {
-				page[ scoreName ] = score.probability['true'];
+				page[ scoreName ] = score.probability[ 'true' ];
 			}
 		} );
-		pages = pages.sort( function( a, b ){
+		pages = pages.sort( function ( a, b ) {
 			return b[ scoreName ] - a[ scoreName ];
 		} ).slice( 0, max );
 		showTable( pages );
@@ -67,7 +68,7 @@
 			return
 		}
 		revids = $.map( pages, function ( page ) {
-			return page.revisions[0].revid;
+			return page.revisions[ 0 ].revid;
 		} );
 		$.ajax( {
 			url: oresUrl,
