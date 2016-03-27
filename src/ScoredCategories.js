@@ -106,15 +106,15 @@
 				gcmtitle: mw.config.get( 'wgPageName' ),
 				formatversion: 2,
 				gcmlimit: batchSize,
-				continue: ''
+				'continue': ''
 			},
 			getCategoryMembersBatch = function ( queryContinue ) {
 				$.extend( param, queryContinue );
 				api.get( param )
 				.done( function ( data ) {
 					pages = pages.concat( ( data.query && data.query.pages ) || [] );
-					if ( data.continue ) {
-						getCategoryMembersBatch( data.continue );
+					if ( data[ 'continue' ] ) {
+						getCategoryMembersBatch( data[ 'continue' ] );
 					} else {
 						getScores();
 					}
