@@ -6,7 +6,8 @@
  */
 ( function ( mw, $ ) {
 	'use strict';
-	var pages,
+	var pages = [],
+		batchSize = 50,
 		model = 'damaging',
 		scoreName = model + 'Score',
 		oresUrl = '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
@@ -61,39 +62,65 @@
 		showTable( pages );
 	}
 
-	function getScores( data ) {
-		var revids;
-		pages = data.query && data.query.pages;
-		if ( !pages ) {
-			return
+	function getScores() {
+		var revids,
+			i = 0,
+			oresData = {},
+			scoreBatch = function ( idsOnBatch ) {
+				$.ajax( {
+					url: oresUrl,
+					data: {
+						models: 'damaging',
+						revids: idsOnBatch.join( '|' )
+					},
+					dataType: 'json'
+				} )
+				.done( function ( data ) {
+					$.extend( oresData, data );
+					i += batchSize;
+					if ( i < revids.length ) {
+						scoreBatch( revids.slice( i, i + batchSize ) );
+					} else {
+						getTopScores( oresData );
+					}
+				} )
+				.fail( function () {
+					mw.log.error( 'The request failed.', arguments );
+				} );
+			};
+		if ( !pages.length ) {
+			return;
 		}
 		revids = $.map( pages, function ( page ) {
 			return page.revisions[ 0 ].revid;
 		} );
-		$.ajax( {
-			url: oresUrl,
-			data: {
-				models: model,
-				// TODO: Prevent this URL from having more than 2000 characters
-				revids: revids.join( '|' )
-			},
-			dataType: 'json'
-		} )
-		.done( getTopScores );
+		scoreBatch( revids.slice( i, i + batchSize ) );
 	}
 
 	function getCategoryMembers() {
-		var api = new mw.Api();
-		api.get( {
-			prop: 'revisions',
-			rvprop: 'ids',
-			generator: 'categorymembers',
-			gcmtitle: mw.config.get( 'wgPageName' ),
-			formatversion: 2,
-			// FIXME: add continuation!
-			gcmlimit: 150
-		} )
-		.done( getScores );
+		var api = new mw.Api(),
+			param = {
+				prop: 'revisions',
+				rvprop: 'ids',
+				generator: 'categorymembers',
+				gcmtitle: mw.config.get( 'wgPageName' ),
+				formatversion: 2,
+				gcmlimit: batchSize,
+				continue: ''
+			},
+			getCategoryMembersBatch = function ( queryContinue ) {
+				$.extend( param, queryContinue );
+				api.get( param )
+				.done( function ( data ) {
+					pages = pages.concat( ( data.query && data.query.pages ) || [] );
+					if ( data.continue ) {
+						getCategoryMembersBatch( data.continue );
+					} else {
+						getScores();
+					}
+				} );
+			};
+		getCategoryMembersBatch();
 	}
 
 	if ( mw.config.get( 'wgNamespaceNumber' ) === 14 &&
