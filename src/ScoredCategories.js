@@ -105,7 +105,7 @@
 				generator: 'categorymembers',
 				gcmtitle: mw.config.get( 'wgPageName' ),
 				formatversion: 2,
-				gcmlimit: batchSize,
+				gcmlimit: 'max',
 				'continue': ''
 			},
 			getCategoryMembersBatch = function ( queryContinue ) {
