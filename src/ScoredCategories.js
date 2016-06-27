@@ -10,7 +10,7 @@
 		batchSize = 50,
 		model = 'damaging',
 		scoreName = model + 'Score',
-		oresUrl = '//ores.wmflabs.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
+		oresUrl = '//ores.wikimedia.org/scores/' + mw.config.get( 'wgDBname' ) + '/',
 		max = 10;
 	function showTable( pages ) {
 		var i, page, $row, score, revid,
